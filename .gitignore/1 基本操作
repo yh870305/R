@@ -1,0 +1,84 @@
+1.   显示内容
+print()
+#print函数一次只能显示一个内容，显示多个内容必须print(1);print(2);...
+
+cat()
+cat("现有=",money,"\n"，sep = " ")
+#cat函数可以显示简单向量及字符串，利用"\n"可以换行显示。money为环境变量。默认sep = " "会在每个元素
+之间加上空格
+
+
+
+2.   列出变量
+ls()
+#ls()函数可以列出当前工作列表的所有对象名称
+
+ls.str()
+#即显示了变量名，又显示了数据结构
+
+
+
+3.   删除变量
+rm(X,Y,Z)
+rm(list=ls())
+#第二个删除所有变量
+
+
+4.   改变数据显示位数
+option(digits=4)
+#4.123  4123都是显示4位，实际上在显示一个向量时会先找到最小数值需要的位数，例如digits=2，则0.00013
+不会变成0，而是同向量所有数据精确到小数点后5位
+
+
+
+5.   导入数据
+5.1  导入HTML表格数据
+library(XML)
+strurl = 'http://sports.163.com/zc/'  #将网址定为一个变量
+tables = readHTMLTable(strurl, header = FALSE, stringsAsFactors = FALSE)
+# 解决中文乱码问题的方法：将数据导出到本地的txt文件，再重新导入即可：
+table_sub <- tables[[1]]
+write.table(table_sub, "table_sub.txt", row.names = F)
+read.table("table_sub.txt", encoding = 'UTF-8', header = T)
+
+
+5.2  导入未知数据时(数据量很大)
+DATA=readLines("DATA.txt",n=10)
+#对于不知道结构的数据，可以先读10行看看其数据结构
+
+
+5.3  导入大量数据
+library(data.table)
+DATA=fread("data.csv")
+
+
+5.4  导入ODBC数据
+library(RODBC)
+conn1=odbcConnect("ODBC连接名",uid="",pwd="")
+DATA=sqlQuery(conn1,"SQL查询语句",stringsAsFactors=F)
+close(conn1)
+#这里要求R软件位数与数据库位数一致，否则报错
+
+
+6.   导出数据
+6.1  导出为excel,数据量小时使用
+library(xlsx) 
+write.xlsx(DATA, "DATA.xlsx") 
+
+6.2  导出为csv,数据量大时使用
+write.csv(DATA, "DATA.csv") 
+
+
+7.   保存模型
+save(DATA.nnet,file="./DATA.nnetmodel.RData")
+#DATA.nnet为神经网络模型，file=""为模型路径
+
+
+
+8    模型上线
+上线的文件提供两个XX.RData与预测函数Pred.R
+Pred.R=function(x1,x2,x3){
+       data=cbind(x1,x2,x3)
+       pred=predict(nnetmodel,data,type="class")
+       return(pred)
+}
